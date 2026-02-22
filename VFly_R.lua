@@ -469,4 +469,10 @@ Flymguiv2.Destroying:Connect(function()
     if connection then
         connection:Disconnect()
     end
+    if bodyVelocity then
+        bodyVelocity:Destroy()
+    end
+    if bodyGyro then
+        bodyGyro:Destroy()
+    end
 end)
