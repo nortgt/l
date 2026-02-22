@@ -31,7 +31,7 @@ Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.1, 0, 0.1, 0)
-Frame.Size = UDim2.new(0, 240, 0, 140)
+Frame.Size = UDim2.new(0, 240, 0, 120)
 Frame.Active = true
 
 -- Add rounded corners
@@ -181,15 +181,15 @@ local function createStyledLabel(parent, posX, posY, sizeX, sizeY, text, bgColor
 end
 
 -- Crear botones con el nuevo diseño
-up = createStyledButton(Frame, 0.05, 0.35, 50, 35, "↑", Color3.fromRGB(60, 60, 80), 20)
+up = createStyledButton(Frame, 0.05, 0.3, 50, 35, "↑", Color3.fromRGB(60, 60, 80), 20)
 down = createStyledButton(Frame, 0.05, 0.65, 50, 35, "↓", Color3.fromRGB(60, 60, 80), 20)
 
-plus = createStyledButton(Frame, 0.72, 0.35, 50, 35, "+", Color3.fromRGB(60, 80, 60), 20)
-minus = createStyledButton(Frame, 0.72, 0.65, 50, 35, "-", Color3.fromRGB(80, 60, 60), 20)
+plus = createStyledButton(Frame, 0.3, 0.3, 50, 35, "+", Color3.fromRGB(60, 80, 60), 20)
+minus = createStyledButton(Frame, 0.3, 0.65, 50, 35, "-", Color3.fromRGB(80, 60, 60), 20)
 
-toggle = createStyledButton(Frame, 0.3, 0.5, 80, 40, "FLY", Color3.fromRGB(80, 60, 60), 16)
+toggle = createStyledButton(Frame, 0.55, 0.65, 100, 35, "FLY", Color3.fromRGB(80, 60, 60), 16)
 
-speedLabel = createStyledLabel(Frame, 0.4, 0.65, 50, 35, "1", Color3.fromRGB(40, 40, 40))
+speedLabel = createStyledLabel(Frame, 0.55, 0.3, 50, 35, "1", Color3.fromRGB(40, 40, 40))
 
 -- 2. LÓGICA DE INTERFAZ (Arrastrar y minimizar)
 local minimized, dragging, dragInput, dragStart, startPos = false, false, nil, nil, nil
@@ -258,7 +258,7 @@ mini2.MouseButton1Click:Connect(function()
     end
     mini.Visible = true
     mini2.Visible = false
-    Frame:TweenSize(UDim2.new(0, 240, 0, 140), "Out", "Quad", 0.3, true)
+    Frame:TweenSize(UDim2.new(0, 240, 0, 120), "Out", "Quad", 0.3, true)
     Frame.BackgroundTransparency = 0
 end)
 
