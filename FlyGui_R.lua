@@ -404,14 +404,12 @@ local function handleInput(input, isGameProcessed)
 end
 
 toggle.MouseButton1Click:Connect(function()
-    if not isFlying then
-        startFly()
-        toggle.BackgroundColor3 = Color3.fromRGB(60, 80, 60)
-        toggle.Text = "STOP"
-    else
+    if isFlying then
         stopFly()
-        toggle.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
-        toggle.Text = "FLY"
+        toggle.BackgroundColor3 = Color3.fromRGB(80, 80, 60)
+    else
+        startFly()
+        toggle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     end
 end)
 
