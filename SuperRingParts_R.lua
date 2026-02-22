@@ -49,7 +49,7 @@ Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
-Frame.Size = UDim2.new(0, 280, 0, 260)
+Frame.Size = UDim2.new(0, 280, 0, 280) -- Aumentado ligeramente para dar más espacio
 Frame.Active = true
 
 -- Add rounded corners
@@ -146,12 +146,12 @@ mini2Corner.CornerRadius = UDim.new(0, 6)
 mini2Corner.Parent = mini2
 
 -- Función para crear botones con estilo FLYGUI
-local function createStyledButton(parent, posX, posY, text, color, isToggle)
+local function createStyledButton(parent, posX, posY, sizeX, sizeY, text, color, isToggle)
     local btn = Instance.new("TextButton")
     btn.Parent = parent
     btn.BackgroundColor3 = color
     btn.Position = UDim2.new(posX, 0, posY, 0)
-    btn.Size = UDim2.new(0.3, 0, 0.12, 0)
+    btn.Size = UDim2.new(0, sizeX, 0, sizeY)
     btn.Font = Enum.Font.Gotham
     btn.Text = text
     btn.TextColor3 = Color3.fromRGB(220, 220, 220)
@@ -163,7 +163,7 @@ local function createStyledButton(parent, posX, posY, text, color, isToggle)
     
     -- Hover effects
     local originalColor = color
-    local hoverColor = isToggle and Color3.fromRGB(100, 70, 70) or Color3.fromRGB(
+    local hoverColor = Color3.fromRGB(
         math.min(color.R * 255 + 20, 255) / 255,
         math.min(color.G * 255 + 20, 255) / 255,
         math.min(color.B * 255 + 20, 255) / 255
@@ -180,12 +180,12 @@ local function createStyledButton(parent, posX, posY, text, color, isToggle)
     return btn
 end
 
-local function createStyledLabel(parent, posX, posY, text, bgColor)
+local function createStyledLabel(parent, posX, posY, sizeX, sizeY, text, bgColor)
     local lbl = Instance.new("TextLabel")
     lbl.Parent = parent
     lbl.BackgroundColor3 = bgColor
     lbl.Position = UDim2.new(posX, 0, posY, 0)
-    lbl.Size = UDim2.new(0.2, 0, 0.12, 0)
+    lbl.Size = UDim2.new(0, sizeX, 0, sizeY)
     lbl.Font = Enum.Font.GothamBold
     lbl.Text = text
     lbl.TextColor3 = Color3.fromRGB(220, 220, 220)
@@ -199,27 +199,27 @@ local function createStyledLabel(parent, posX, posY, text, bgColor)
 end
 
 -- Radius Controls
-decRad = createStyledButton(Frame, 0.05, 0.3, "-", Color3.fromRGB(60, 60, 80), false)
-incRad = createStyledButton(Frame, 0.65, 0.3, "+", Color3.fromRGB(60, 80, 60), false)
-radDisp = createStyledLabel(Frame, 0.4, 0.3, "RAD: 50", Color3.fromRGB(40, 40, 40))
+decRad = createStyledButton(Frame, 0.05, 0.15, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
+incRad = createStyledButton(Frame, 0.65, 0.15, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+radDisp = createStyledLabel(Frame, 0.35, 0.15, 65, 30, "RAD: 50", Color3.fromRGB(40, 40, 40))
 
 -- Height Controls
-decHeight = createStyledButton(Frame, 0.05, 0.45, "-", Color3.fromRGB(60, 60, 80), false)
-incHeight = createStyledButton(Frame, 0.65, 0.45, "+", Color3.fromRGB(60, 80, 60), false)
-heightDisp = createStyledLabel(Frame, 0.4, 0.45, "HGT: 100", Color3.fromRGB(40, 40, 40))
+decHeight = createStyledButton(Frame, 0.05, 0.3, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
+incHeight = createStyledButton(Frame, 0.65, 0.3, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+heightDisp = createStyledLabel(Frame, 0.35, 0.3, 65, 30, "HGT: 100", Color3.fromRGB(40, 40, 40))
 
 -- Rotation Speed Controls
-decSpeed = createStyledButton(Frame, 0.05, 0.6, "-", Color3.fromRGB(60, 60, 80), false)
-incSpeed = createStyledButton(Frame, 0.65, 0.6, "+", Color3.fromRGB(60, 80, 60), false)
-speedDisp = createStyledLabel(Frame, 0.4, 0.6, "SPD: 10", Color3.fromRGB(40, 40, 40))
+decSpeed = createStyledButton(Frame, 0.05, 0.45, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
+incSpeed = createStyledButton(Frame, 0.65, 0.45, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+speedDisp = createStyledLabel(Frame, 0.35, 0.45, 65, 30, "SPD: 10", Color3.fromRGB(40, 40, 40))
 
 -- Attraction Strength Controls
-decStrength = createStyledButton(Frame, 0.05, 0.75, "-", Color3.fromRGB(60, 60, 80), false)
-incStrength = createStyledButton(Frame, 0.65, 0.75, "+", Color3.fromRGB(60, 80, 60), false)
-strengthDisp = createStyledLabel(Frame, 0.4, 0.75, "STR: 1000", Color3.fromRGB(40, 40, 40))
+decStrength = createStyledButton(Frame, 0.05, 0.6, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
+incStrength = createStyledButton(Frame, 0.65, 0.6, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+strengthDisp = createStyledLabel(Frame, 0.35, 0.6, 65, 30, "STR: 1000", Color3.fromRGB(40, 40, 40))
 
--- Toggle Button (FLY/ON-OFF)
-toggleBtn = createStyledButton(Frame, 0.65, 0.15, "RING OFF", Color3.fromRGB(80, 60, 60), true)
+-- Toggle Button (abajo, ocupando todo el ancho)
+toggleBtn = createStyledButton(Frame, 0.05, 0.75, 250, 35, "RING OFF", Color3.fromRGB(80, 60, 60), true)
 
 -- Info Label
 info.Parent = Frame
@@ -300,7 +300,7 @@ mini2.MouseButton1Click:Connect(function()
     end
     mini.Visible = true
     mini2.Visible = false
-    Frame:TweenSize(UDim2.new(0, 280, 0, 260), "Out", "Quad", 0.3, true)
+    Frame:TweenSize(UDim2.new(0, 280, 0, 280), "Out", "Quad", 0.3, true) -- Ajustado al nuevo tamaño
     Frame.BackgroundTransparency = 0
 end)
 
@@ -377,7 +377,6 @@ end
 toggleBtn.MouseButton1Click:Connect(function()
     ringEnabled = not ringEnabled
     toggleBtn.Text = ringEnabled and "RING ON" or "RING OFF"
-    toggleBtn.BackgroundColor3 = ringEnabled and Color3.fromRGB(60, 80, 60) or Color3.fromRGB(80, 60, 60)
     toggleBtn.BackgroundColor3 = ringEnabled and Color3.fromRGB(60, 80, 60) or Color3.fromRGB(80, 60, 60)
 end)
 
