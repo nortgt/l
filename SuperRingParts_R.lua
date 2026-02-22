@@ -200,7 +200,7 @@ end
 
 -- Radius Controls
 decRad = createStyledButton(Frame, 0.05, 0.15, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
-incRad = createStyledButton(Frame, 0.65, 0.15, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+incRad = createStyledButton(Frame, 0.7, 0.15, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
 radDisp = createStyledLabel(Frame, 0.35, 0.15, 75, 30, "RAD: 50", Color3.fromRGB(40, 40, 40))
 
 -- Height Controls
