@@ -26,12 +26,12 @@ Gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Gui.ResetOnSpawn = false
 
--- Main Frame
+-- Main Frame (ligeramente más alto para mejor distribución)
 Main.Parent = Gui
 Main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Main.BorderSizePixel = 0
 Main.Position = UDim2.new(0.3, 0, 0.5, 0)
-Main.Size = UDim2.new(0, 280, 0, 160)
+Main.Size = UDim2.new(0, 280, 0, 180) -- Aumentado de 160 a 180
 Main.Active = true
 
 -- Add rounded corners
@@ -193,15 +193,17 @@ local function createStyledButton(parent, posX, posY, sizeX, sizeY, text, color,
     return btn
 end
 
--- Instrucción label
-local instructionLabel = createStyledLabel(Main, 0.1, 0.15, 220, 25, "Enter player name:", Color3.fromRGB(200, 200, 200), Color3.fromRGB(30, 30, 30))
+-- Instrucción label (más espaciado)
+local instructionLabel = createStyledLabel(Main, 0.1, 0.1, 220, 20, "Enter player name:", Color3.fromRGB(200, 200, 200), Color3.fromRGB(30, 30, 30))
 instructionLabel.BackgroundTransparency = 1
+instructionLabel.TextXAlignment = Enum.TextXAlignment.Left
+instructionLabel.TextSize = 14
 
 -- TextBox para nombre del jugador
 Box = Instance.new("TextBox")
 Box.Parent = Main
 Box.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Box.Position = UDim2.new(0.1, 0, 0.3, 0)
+Box.Position = UDim2.new(0.1, 0, 0.2, 0)
 Box.Size = UDim2.new(0, 220, 0, 35)
 Box.Font = Enum.Font.Gotham
 Box.Text = ""
@@ -214,18 +216,26 @@ local boxCorner = Instance.new("UICorner")
 boxCorner.CornerRadius = UDim.new(0, 6)
 boxCorner.Parent = Box
 
--- Status label para feedback
-local statusLabel = createStyledLabel(Main, 0.1, 0.5, 220, 20, "", Color3.fromRGB(150, 150, 150), Color3.fromRGB(30, 30, 30))
+-- Status label para feedback (más espacio)
+local statusLabel = createStyledLabel(Main, 0.1, 0.4, 220, 20, "", Color3.fromRGB(150, 150, 150), Color3.fromRGB(30, 30, 30))
 statusLabel.BackgroundTransparency = 1
-statusLabel.TextSize = 12
+statusLabel.TextSize = 13
+statusLabel.TextXAlignment = Enum.TextXAlignment.Center
 
 -- Botón principal
-Button = createStyledButton(Main, 0.1, 0.65, 220, 40, "BRING | OFF", Color3.fromRGB(80, 60, 60), 16)
+Button = createStyledButton(Main, 0.1, 0.5, 220, 40, "BRING | OFF", Color3.fromRGB(80, 60, 60), 16)
 
--- Hotkey info
-local hotkeyLabel = createStyledLabel(Main, 0.1, 0.85, 220, 15, "Press RightCtrl to toggle GUI", Color3.fromRGB(120, 120, 120), Color3.fromRGB(30, 30, 30))
+-- Hotkey info (más espaciado y mejor posicionado)
+local hotkeyLabel = createStyledLabel(Main, 0.1, 0.75, 220, 20, "Press RightCtrl to toggle GUI", Color3.fromRGB(180, 180, 180), Color3.fromRGB(30, 30, 30))
 hotkeyLabel.BackgroundTransparency = 1
-hotkeyLabel.TextSize = 10
+hotkeyLabel.TextSize = 12
+hotkeyLabel.TextXAlignment = Enum.TextXAlignment.Center
+
+-- Crédito adicional (opcional, para dar más estilo)
+local versionLabel = createStyledLabel(Main, 0.1, 0.85, 220, 15, "v1.0", Color3.fromRGB(100, 100, 100), Color3.fromRGB(30, 30, 30))
+versionLabel.BackgroundTransparency = 1
+versionLabel.TextSize = 10
+versionLabel.TextXAlignment = Enum.TextXAlignment.Right
 
 -- 2. LÓGICA DE INTERFAZ (Arrastrar y minimizar)
 local minimized, dragging, dragInput, dragStart, startPos = false, false, nil, nil, nil
@@ -273,8 +283,8 @@ dragHandle.InputBegan:Connect(function(input)
     end
 end)
 
--- Minimizar/Restaurar
-local uiElements = {Box, Button, instructionLabel, statusLabel, hotkeyLabel}
+-- Minimizar/Restaurar (actualizado con los nuevos elementos)
+local uiElements = {Box, Button, instructionLabel, statusLabel, hotkeyLabel, versionLabel}
 
 mini.MouseButton1Click:Connect(function()
     minimized = true
@@ -294,7 +304,7 @@ mini2.MouseButton1Click:Connect(function()
     end
     mini.Visible = true
     mini2.Visible = false
-    Main:TweenSize(UDim2.new(0, 280, 0, 160), "Out", "Quad", 0.3, true)
+    Main:TweenSize(UDim2.new(0, 280, 0, 180), "Out", "Quad", 0.3, true) -- Actualizado al nuevo tamaño
     Main.BackgroundTransparency = 0
 end)
 
