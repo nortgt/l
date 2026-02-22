@@ -23,6 +23,12 @@ local Flyon = Instance.new("Frame")
 local W = Instance.new("TextButton")
 local S = Instance.new("TextButton")
 
+-- Variables de control de vuelo
+local flying = false
+local bodyVelocity = nil
+local bodyGyro = nil
+local connection = nil
+
 -- Main GUI
 Flymguiv2.Name = "VFlyGUI"
 Flymguiv2.Parent = game.CoreGui
@@ -184,22 +190,20 @@ local function createStyledButton(parent, posX, posY, sizeX, sizeY, text, color,
     btnCorner.CornerRadius = UDim.new(0, 6)
     btnCorner.Parent = btn
     
-    -- Guardar color original para hover
-    btn:SetAttribute("OriginalColor", color)
-    
     -- Hover effects
+    local originalColor = color
+    local hoverColor = Color3.fromRGB(
+        math.min(color.R * 255 + 20, 255) / 255,
+        math.min(color.G * 255 + 20, 255) / 255,
+        math.min(color.B * 255 + 20, 255) / 255
+    )
+    
     btn.MouseEnter:Connect(function()
-        local original = btn:GetAttribute("OriginalColor")
-        local hoverColor = Color3.fromRGB(
-            math.min(original.R * 255 + 20, 255) / 255,
-            math.min(original.G * 255 + 20, 255) / 255,
-            math.min(original.B * 255 + 20, 255) / 255
-        )
         btn.BackgroundColor3 = hoverColor
     end)
     
     btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = btn:GetAttribute("OriginalColor")
+        btn.BackgroundColor3 = originalColor
     end)
     
     return btn
@@ -227,8 +231,8 @@ speedCorner.Parent = Speed
 statusLabel = createStyledLabel(FlyFrame, 0.05, 0.4, 80, 30, "Status:", Color3.fromRGB(220, 220, 220))
 Stat2 = createStyledLabel(FlyFrame, 0.35, 0.4, 50, 30, "Off", Color3.fromRGB(255, 50, 50))
 
--- Botón toggle (reemplaza a Fly y Unfly)
-FlyToggle = createStyledButton(FlyFrame, 0.25, 0.65, 140, 40, "ENABLE FLY", Color3.fromRGB(0, 150, 191), 16)
+-- Botón toggle único (reemplaza a Fly y Unfly)
+FlyToggle = createStyledButton(FlyFrame, 0.05, 0.65, 250, 40, "ENABLE FLY", Color3.fromRGB(0, 150, 191), 16)
 
 -- Frame de controles de vuelo (Flyon)
 Flyon.Parent = Frame
@@ -334,7 +338,7 @@ mini2.MouseButton1Click:Connect(function()
     for _, element in ipairs(uiElements) do
         element.Visible = true
     end
-    if Flyon.Visible then -- Solo mostrar Flyon si está activado
+    if flying then
         Flyon.Visible = true
     end
     mini.Visible = true
@@ -344,17 +348,19 @@ mini2.MouseButton1Click:Connect(function()
 end)
 
 closebutton.MouseButton1Click:Connect(function()
+    -- Limpiar recursos antes de destruir
+    if flying then
+        toggleFly()
+    end
+    if connection then
+        connection:Disconnect()
+    end
     Flymguiv2:Destroy()
 end)
 
--- 3. LÓGICA DE VUELO (toggle)
-local flyEnabled = false
-local bodyVelocity = nil
-local bodyGyro = nil
-var renderSteppedConnection = nil
-
+-- 3. LÓGICA DE VUELO (mejorada con toggle)
 local function applyVelocity(direction)
-    if not flyEnabled then return end
+    if not flying then return end
     
     local character = LocalPlayer.Character
     if not character then return end
@@ -362,111 +368,103 @@ local function applyVelocity(direction)
     local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
     if HumanoidRP and bodyVelocity then
         local speedValue = tonumber(Speed.Text) or 50
-        -- Aplicar velocidad en la dirección de la cámara
-        local moveDirection = workspace.CurrentCamera.CFrame.LookVector * direction
-        bodyVelocity.Velocity = moveDirection * speedValue
+        bodyVelocity.Velocity = workspace.CurrentCamera.CFrame.LookVector * (speedValue * direction)
     end
 end
 
 local function flyConnect(btn, dir)
-    btn.MouseButton1Click:Connect(function() 
-        if flyEnabled then
-            applyVelocity(dir) 
-        end
-    end)
-    btn.TouchLongPress:Connect(function() 
-        if flyEnabled then
-            applyVelocity(dir) 
-        end
+    btn.MouseButton1Click:Connect(function() applyVelocity(dir) end)
+    btn.MouseButton1Down:Connect(function()
+        -- Continuar aplicando velocidad mientras se mantiene presionado
+        local connection
+        connection = RunService.Heartbeat:Connect(function()
+            applyVelocity(dir)
+        end)
+        
+        btn.MouseButton1Up:Connect(function()
+            if connection then
+                connection:Disconnect()
+                -- Detener movimiento
+                if bodyVelocity then
+                    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                end
+            end
+        end)
     end)
 end
 
 flyConnect(W, 1)
 flyConnect(S, -1)
 
--- Función para desactivar vuelo
-local function disableFly()
-    flyEnabled = false
-    
-    -- Actualizar UI
-    FlyToggle.Text = "ENABLE FLY"
-    FlyToggle:SetAttribute("OriginalColor", Color3.fromRGB(0, 150, 191))
-    FlyToggle.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
-    Flyon.Visible = false
-    Stat2.Text = "Off"
-    Stat2.TextColor3 = Color3.fromRGB(255, 50, 50)
-    
-    -- Eliminar BodyVelocity y BodyGyro
-    local character = LocalPlayer.Character
-    if character then
-        local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
-        if HumanoidRP then
-            if bodyVelocity then
-                bodyVelocity:Destroy()
-                bodyVelocity = nil
-            end
-            if bodyGyro then
-                bodyGyro:Destroy()
-                bodyGyro = nil
-            end
-        end
-    end
-    
-    -- Desconectar RenderStepped
-    if renderSteppedConnection then
-        renderSteppedConnection:Disconnect()
-        renderSteppedConnection = nil
-    end
-end
-
--- Función para activar vuelo
-local function enableFly()
+-- Función toggle para activar/desactivar vuelo
+local function toggleFly()
     local character = LocalPlayer.Character
     if not character then return end
     
     local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
     if not HumanoidRP then return end
     
-    flyEnabled = true
-    
-    -- Actualizar UI
-    FlyToggle.Text = "DISABLE FLY"
-    FlyToggle:SetAttribute("OriginalColor", Color3.fromRGB(200, 50, 50))
-    FlyToggle.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-    Flyon.Visible = true
-    Stat2.Text = "On"
-    Stat2.TextColor3 = Color3.fromRGB(50, 255, 50)
-    
-    -- Crear BodyVelocity
-    bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    bodyVelocity.Parent = HumanoidRP
-    
-    -- Crear BodyGyro para mantener orientación
-    bodyGyro = Instance.new("BodyGyro")
-    bodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-    bodyGyro.D = 5000
-    bodyGyro.P = 100000
-    bodyGyro.Parent = HumanoidRP
-    
-    -- Conectar RenderStepped para mantener orientación
-    renderSteppedConnection = RunService.RenderStepped:Connect(function()
-        if flyEnabled and HumanoidRP and HumanoidRP.Parent then
-            bodyGyro.CFrame = workspace.CurrentCamera.CFrame
-        elseif not flyEnabled then
-            disableFly()
+    if not flying then
+        -- ACTIVAR VUELO
+        flying = true
+        
+        -- Actualizar UI
+        FlyToggle.Text = "DISABLE FLY"
+        FlyToggle.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+        Flyon.Visible = true
+        Stat2.Text = "On"
+        Stat2.TextColor3 = Color3.fromRGB(50, 255, 50)
+        
+        -- Crear BodyVelocity
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bodyVelocity.Parent = HumanoidRP
+        
+        -- Crear BodyGyro para mantener orientación
+        bodyGyro = Instance.new("BodyGyro")
+        bodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bodyGyro.D = 5000
+        bodyGyro.P = 100000
+        bodyGyro.Parent = HumanoidRP
+        
+        -- Conectar al RenderStepped para actualizar orientación
+        connection = RunService.RenderStepped:Connect(function()
+            if flying and HumanoidRP and HumanoidRP.Parent then
+                bodyGyro.CFrame = workspace.CurrentCamera.CFrame
+            end
+        end)
+        
+    else
+        -- DESACTIVAR VUELO
+        flying = false
+        
+        -- Actualizar UI
+        FlyToggle.Text = "ENABLE FLY"
+        FlyToggle.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+        Flyon.Visible = false
+        Stat2.Text = "Off"
+        Stat2.TextColor3 = Color3.fromRGB(255, 50, 50)
+        
+        -- Limpiar instancias
+        if bodyVelocity then
+            bodyVelocity:Destroy()
+            bodyVelocity = nil
         end
-    end)
+        
+        if bodyGyro then
+            bodyGyro:Destroy()
+            bodyGyro = nil
+        end
+        
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+    end
 end
 
--- Toggle button
-FlyToggle.MouseButton1Click:Connect(function()
-    if flyEnabled then
-        disableFly()
-    else
-        enableFly()
-    end
-end)
+-- Conectar el botón toggle
+FlyToggle.MouseButton1Click:Connect(toggleFly)
 
 -- Validación de entrada de velocidad
 Speed.FocusLost:Connect(function()
@@ -476,15 +474,17 @@ Speed.FocusLost:Connect(function()
     end
 end)
 
--- Limpiar al destruir
-Flymguiv2.Destroying:Connect(function()
-    if renderSteppedConnection then
-        renderSteppedConnection:Disconnect()
-    end
-    if bodyVelocity then
-        bodyVelocity:Destroy()
-    end
-    if bodyGyro then
-        bodyGyro:Destroy()
+-- Manejar cuando el personaje respawnea
+LocalPlayer.CharacterAdded:Connect(function(character)
+    -- Esperar a que el personaje esté listo
+    character:WaitForChild("HumanoidRootPart")
+    
+    -- Si estaba volando, reactivar después del respawn
+    if flying then
+        -- Pequeña espera para asegurar que el personaje esté completamente cargado
+        task.wait(0.5)
+        toggleFly() -- Desactivar primero
+        task.wait(0.1)
+        toggleFly() -- Reactivar
     end
 end)
