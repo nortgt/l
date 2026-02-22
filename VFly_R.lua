@@ -228,15 +228,15 @@ Stat2 = createStyledLabel(FlyFrame, 0.35, 0.4, 50, 30, "Off", Color3.fromRGB(255
 -- Botón toggle
 FlyToggle = createStyledButton(FlyFrame, 0.05, 0.65, 250, 40, "ENABLE", Color3.fromRGB(0, 150, 191), 16)
 
--- Frame de controles de vuelo (Flyon) - AHORA ES HIJO DE Flymguiv2 (INDEPENDIENTE)
-Flyon.Parent = Flymguiv2 -- Cambiado: ahora es hijo directo de la GUI principal
+-- Frame de controles de vuelo (Flyon) - HIJO DE Flymguiv2 (INDEPENDIENTE)
+Flyon.Parent = Flymguiv2
 Flyon.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Flyon.BorderSizePixel = 0
-Flyon.Position = UDim2.new(0.3, 0, 0.455, 0) -- Posición diferente a la del frame principal
+Flyon.Position = UDim2.new(0.3, 0, 0.455, 0)
 Flyon.Size = UDim2.new(0, 100, 0, 100)
 Flyon.Visible = false
 Flyon.Active = true
-Flyon.Draggable = true -- Importante: que sea draggable para moverse independientemente
+Flyon.Draggable = true
 
 -- Esquinas redondeadas para Flyon
 local flyonCorner = Instance.new("UICorner")
@@ -312,7 +312,7 @@ dragHandle.InputBegan:Connect(function(input)
     end
 end)
 
--- Minimizar/Restaurar (solo afecta al frame principal)
+-- Minimizar/Restaurar (SOLO afecta al frame principal, NO a Flyon)
 local uiElements = {FlyFrame}
 
 mini.MouseButton1Click:Connect(function()
@@ -320,7 +320,7 @@ mini.MouseButton1Click:Connect(function()
     for _, element in ipairs(uiElements) do
         element.Visible = false
     end
-    Flyon.Visible = false -- Ocultamos Flyon al minimizar
+    -- IMPORTANTE: NO ocultamos Flyon aquí, como en el script original
     mini.Visible = false
     mini2.Visible = true
     Frame:TweenSize(UDim2.new(0, 280, 0, 30), "Out", "Quad", 0.3, true)
@@ -332,9 +332,8 @@ mini2.MouseButton1Click:Connect(function()
     for _, element in ipairs(uiElements) do
         element.Visible = true
     end
-    if FlyToggle.Text == "DISABLE" then
-        Flyon.Visible = true -- Solo mostramos Flyon si el vuelo está activado
-    end
+    -- Restauramos la visibilidad de Flyon solo si el vuelo está activado
+    -- Pero NO lo ocultamos aquí porque ya debería tener el estado correcto
     mini.Visible = true
     mini2.Visible = false
     Frame:TweenSize(UDim2.new(0, 280, 0, 180), "Out", "Quad", 0.3, true)
@@ -385,7 +384,7 @@ local function toggleFly()
         flying = true
         FlyToggle.Text = "DISABLE"
         FlyToggle.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-        Flyon.Visible = true
+        Flyon.Visible = true -- Mostramos Flyon SOLO cuando se activa el vuelo
         Stat2.Text = "On"
         Stat2.TextColor3 = Color3.fromRGB(50, 255, 50)
         
@@ -434,7 +433,7 @@ local function toggleFly()
         flying = false
         FlyToggle.Text = "ENABLE"
         FlyToggle.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
-        Flyon.Visible = false
+        Flyon.Visible = false -- Ocultamos Flyon SOLO cuando se desactiva el vuelo
         Stat2.Text = "Off"
         Stat2.TextColor3 = Color3.fromRGB(255, 50, 50)
         
