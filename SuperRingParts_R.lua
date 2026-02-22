@@ -23,7 +23,6 @@ local mini = Instance.new("TextButton")
 local mini2 = Instance.new("TextButton")
 
 -- Elementos del SuperRing
-local toggleBtn = Instance.new("TextButton")
 local decRad = Instance.new("TextButton")
 local incRad = Instance.new("TextButton")
 local radDisp = Instance.new("TextLabel")
@@ -36,6 +35,7 @@ local speedDisp = Instance.new("TextLabel")
 local decStrength = Instance.new("TextButton")
 local incStrength = Instance.new("TextButton")
 local strengthDisp = Instance.new("TextLabel")
+local toggleBtn = Instance.new("TextButton")
 local info = Instance.new("TextLabel")
 
 -- Main GUI
