@@ -151,7 +151,7 @@ local function createStyledButton(parent, posX, posY, text, color, isToggle)
     btn.Parent = parent
     btn.BackgroundColor3 = color
     btn.Position = UDim2.new(posX, 0, posY, 0)
-    btn.Size = UDim2.new(0.4, 0, 0.12, 0)
+    btn.Size = UDim2.new(0.3, 0, 0.12, 0)
     btn.Font = Enum.Font.Gotham
     btn.Text = text
     btn.TextColor3 = Color3.fromRGB(220, 220, 220)
