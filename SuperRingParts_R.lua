@@ -198,9 +198,6 @@ local function createStyledLabel(parent, posX, posY, text, bgColor)
     return lbl
 end
 
--- Toggle Button (FLY/ON-OFF)
-toggleBtn = createStyledButton(Frame, 0.65, 0.15, "RING OFF", Color3.fromRGB(80, 60, 60), true)
-
 -- Radius Controls
 decRad = createStyledButton(Frame, 0.05, 0.3, "-", Color3.fromRGB(60, 60, 80), false)
 incRad = createStyledButton(Frame, 0.65, 0.3, "+", Color3.fromRGB(60, 80, 60), false)
@@ -220,6 +217,9 @@ speedDisp = createStyledLabel(Frame, 0.4, 0.6, "SPD: 10", Color3.fromRGB(40, 40,
 decStrength = createStyledButton(Frame, 0.05, 0.75, "-", Color3.fromRGB(60, 60, 80), false)
 incStrength = createStyledButton(Frame, 0.65, 0.75, "+", Color3.fromRGB(60, 80, 60), false)
 strengthDisp = createStyledLabel(Frame, 0.4, 0.75, "STR: 1000", Color3.fromRGB(40, 40, 40))
+
+-- Toggle Button (FLY/ON-OFF)
+toggleBtn = createStyledButton(Frame, 0.65, 0.15, "RING OFF", Color3.fromRGB(80, 60, 60), true)
 
 -- Info Label
 info.Parent = Frame
