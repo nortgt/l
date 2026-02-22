@@ -18,8 +18,8 @@ local speedLabel = Instance.new("TextLabel")
 local Speed = Instance.new("TextBox")
 local statusLabel = Instance.new("TextLabel")
 local Stat2 = Instance.new("TextLabel")
-local FlyToggle = Instance.new("TextButton") -- Cambiado de Fly a FlyToggle
-local Flyon = Instance.new("Frame")
+local FlyToggle = Instance.new("TextButton")
+local Flyon = Instance.new("Frame") -- Este será independiente
 local W = Instance.new("TextButton")
 local S = Instance.new("TextButton")
 
@@ -225,18 +225,18 @@ speedCorner.Parent = Speed
 statusLabel = createStyledLabel(FlyFrame, 0.05, 0.4, 80, 30, "Status:", Color3.fromRGB(220, 220, 220))
 Stat2 = createStyledLabel(FlyFrame, 0.35, 0.4, 50, 30, "Off", Color3.fromRGB(255, 50, 50))
 
--- Botón toggle (cambia entre ENABLE/DISABLE) - AHORA OCUPA TODO EL ANCHO
+-- Botón toggle
 FlyToggle = createStyledButton(FlyFrame, 0.05, 0.65, 250, 40, "ENABLE", Color3.fromRGB(0, 150, 191), 16)
 
--- Frame de controles de vuelo (Flyon)
-Flyon.Parent = Frame
+-- Frame de controles de vuelo (Flyon) - AHORA ES HIJO DE Flymguiv2 (INDEPENDIENTE)
+Flyon.Parent = Flymguiv2 -- Cambiado: ahora es hijo directo de la GUI principal
 Flyon.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Flyon.BorderSizePixel = 0
-Flyon.Position = UDim2.new(1, 10, 0, 30)
+Flyon.Position = UDim2.new(0.3, 0, 0.455, 0) -- Posición diferente a la del frame principal
 Flyon.Size = UDim2.new(0, 100, 0, 100)
 Flyon.Visible = false
 Flyon.Active = true
-Flyon.Draggable = true
+Flyon.Draggable = true -- Importante: que sea draggable para moverse independientemente
 
 -- Esquinas redondeadas para Flyon
 local flyonCorner = Instance.new("UICorner")
@@ -266,7 +266,7 @@ flyonTitle.Text = "Direction"
 flyonTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
 flyonTitle.TextSize = 12
 
--- 2. LÓGICA DE INTERFAZ (Arrastrar y minimizar)
+-- 2. LÓGICA DE INTERFAZ (Arrastrar para el frame principal)
 local minimized, dragging, dragInput, dragStart, startPos = false, false, nil, nil, nil
 
 local function update(input)
@@ -312,7 +312,7 @@ dragHandle.InputBegan:Connect(function(input)
     end
 end)
 
--- Minimizar/Restaurar
+-- Minimizar/Restaurar (solo afecta al frame principal)
 local uiElements = {FlyFrame}
 
 mini.MouseButton1Click:Connect(function()
@@ -320,7 +320,7 @@ mini.MouseButton1Click:Connect(function()
     for _, element in ipairs(uiElements) do
         element.Visible = false
     end
-    Flyon.Visible = false
+    Flyon.Visible = false -- Ocultamos Flyon al minimizar
     mini.Visible = false
     mini2.Visible = true
     Frame:TweenSize(UDim2.new(0, 280, 0, 30), "Out", "Quad", 0.3, true)
@@ -333,7 +333,7 @@ mini2.MouseButton1Click:Connect(function()
         element.Visible = true
     end
     if FlyToggle.Text == "DISABLE" then
-        Flyon.Visible = true
+        Flyon.Visible = true -- Solo mostramos Flyon si el vuelo está activado
     end
     mini.Visible = true
     mini2.Visible = false
@@ -345,7 +345,7 @@ closebutton.MouseButton1Click:Connect(function()
     Flymguiv2:Destroy()
 end)
 
--- 3. LÓGICA DE VUELO (FUNCIÓN ORIGINAL RESTAURADA)
+-- 3. LÓGICA DE VUELO
 local function applyVelocity(direction)
     local HumanoidRP = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if HumanoidRP and HumanoidRP:FindFirstChild("BodyVelocity") then
@@ -389,7 +389,7 @@ local function toggleFly()
         Stat2.Text = "On"
         Stat2.TextColor3 = Color3.fromRGB(50, 255, 50)
         
-        -- Crear BodyVelocity (necesario para que applyVelocity funcione)
+        -- Crear BodyVelocity
         local BV = Instance.new("BodyVelocity", HumanoidRP)
         BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
         bodyVelocity = BV
@@ -468,11 +468,5 @@ end)
 Flymguiv2.Destroying:Connect(function()
     if connection then
         connection:Disconnect()
-    end
-    if bodyVelocity then
-        bodyVelocity:Destroy()
-    end
-    if bodyGyro then
-        bodyGyro:Destroy()
     end
 end)
