@@ -404,14 +404,14 @@ local function handleInput(input, isGameProcessed)
 end
 
 toggle.MouseButton1Click:Connect(function()
-    if isFlying then
-        stopFly()
-        toggle.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
-        toggle.Text = "FLY"
-    else
+    if not isFlying then
         startFly()
         toggle.BackgroundColor3 = Color3.fromRGB(60, 80, 60)
         toggle.Text = "STOP"
+    else
+        stopFly()
+        toggle.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+        toggle.Text = "FLY"
     end
 end)
 
@@ -469,7 +469,11 @@ local inputConnections = {
 -- Manejo de respawn
 LocalPlayer.CharacterAdded:Connect(function()
     wait(0.7)
-    stopFly()
+    if isFlying then  -- Solo detener si está volando
+        stopFly()
+        toggle.BackgroundColor3 = Color3.fromRGB(80, 60, 60)
+        toggle.Text = "FLY"
+    end
 end)
 
 -- Limpieza al destruir
@@ -477,5 +481,7 @@ main.Destroying:Connect(function()
     for _, conn in pairs(inputConnections) do
         conn:Disconnect()
     end
-    stopFly()
+    if isFlying then
+        stopFly()
+    end
 end)
