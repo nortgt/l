@@ -49,7 +49,7 @@ Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
-Frame.Size = UDim2.new(0, 300, 0, 280)
+Frame.Size = UDim2.new(0, 280, 0, 260)
 Frame.Active = true
 
 -- Add rounded corners
@@ -199,27 +199,27 @@ local function createStyledLabel(parent, posX, posY, text, bgColor)
 end
 
 -- Toggle Button (FLY/ON-OFF)
-toggleBtn = createStyledButton(Frame, 0.55, 0.15, "RING OFF", Color3.fromRGB(80, 60, 60), true)
+toggleBtn = createStyledButton(Frame, 0.65, 0.15, "RING OFF", Color3.fromRGB(80, 60, 60), true)
 
 -- Radius Controls
 decRad = createStyledButton(Frame, 0.05, 0.3, "-", Color3.fromRGB(60, 60, 80), false)
-incRad = createStyledButton(Frame, 0.55, 0.3, "+", Color3.fromRGB(60, 80, 60), false)
-radDisp = createStyledLabel(Frame, 0.3, 0.3, "RAD: 50", Color3.fromRGB(40, 40, 40))
+incRad = createStyledButton(Frame, 0.65, 0.3, "+", Color3.fromRGB(60, 80, 60), false)
+radDisp = createStyledLabel(Frame, 0.4, 0.3, "RAD: 50", Color3.fromRGB(40, 40, 40))
 
 -- Height Controls
 decHeight = createStyledButton(Frame, 0.05, 0.45, "-", Color3.fromRGB(60, 60, 80), false)
-incHeight = createStyledButton(Frame, 0.55, 0.45, "+", Color3.fromRGB(60, 80, 60), false)
-heightDisp = createStyledLabel(Frame, 0.3, 0.45, "HGT: 100", Color3.fromRGB(40, 40, 40))
+incHeight = createStyledButton(Frame, 0.65, 0.45, "+", Color3.fromRGB(60, 80, 60), false)
+heightDisp = createStyledLabel(Frame, 0.4, 0.45, "HGT: 100", Color3.fromRGB(40, 40, 40))
 
 -- Rotation Speed Controls
 decSpeed = createStyledButton(Frame, 0.05, 0.6, "-", Color3.fromRGB(60, 60, 80), false)
-incSpeed = createStyledButton(Frame, 0.55, 0.6, "+", Color3.fromRGB(60, 80, 60), false)
-speedDisp = createStyledLabel(Frame, 0.3, 0.6, "SPD: 10", Color3.fromRGB(40, 40, 40))
+incSpeed = createStyledButton(Frame, 0.65, 0.6, "+", Color3.fromRGB(60, 80, 60), false)
+speedDisp = createStyledLabel(Frame, 0.4, 0.6, "SPD: 10", Color3.fromRGB(40, 40, 40))
 
 -- Attraction Strength Controls
 decStrength = createStyledButton(Frame, 0.05, 0.75, "-", Color3.fromRGB(60, 60, 80), false)
-incStrength = createStyledButton(Frame, 0.55, 0.75, "+", Color3.fromRGB(60, 80, 60), false)
-strengthDisp = createStyledLabel(Frame, 0.3, 0.75, "STR: 1000", Color3.fromRGB(40, 40, 40))
+incStrength = createStyledButton(Frame, 0.65, 0.75, "+", Color3.fromRGB(60, 80, 60), false)
+strengthDisp = createStyledLabel(Frame, 0.4, 0.75, "STR: 1000", Color3.fromRGB(40, 40, 40))
 
 -- Info Label
 info.Parent = Frame
@@ -289,7 +289,7 @@ mini.MouseButton1Click:Connect(function()
     end
     mini.Visible = false
     mini2.Visible = true
-    Frame:TweenSize(UDim2.new(0, 300, 0, 30), "Out", "Quad", 0.3, true)
+    Frame:TweenSize(UDim2.new(0, 280, 0, 30), "Out", "Quad", 0.3, true)
     Frame.BackgroundTransparency = 0.5
 end)
 
@@ -300,7 +300,7 @@ mini2.MouseButton1Click:Connect(function()
     end
     mini.Visible = true
     mini2.Visible = false
-    Frame:TweenSize(UDim2.new(0, 300, 0, 280), "Out", "Quad", 0.3, true)
+    Frame:TweenSize(UDim2.new(0, 280, 0, 260), "Out", "Quad", 0.3, true)
     Frame.BackgroundTransparency = 0
 end)
 
