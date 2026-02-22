@@ -49,7 +49,7 @@ Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
-Frame.Size = UDim2.new(0, 280, 0, 280) -- Aumentado ligeramente para dar más espacio
+Frame.Size = UDim2.new(0, 260, 0, 260) -- Aumentado ligeramente para dar más espacio
 Frame.Active = true
 
 -- Add rounded corners
@@ -201,25 +201,25 @@ end
 -- Radius Controls
 decRad = createStyledButton(Frame, 0.05, 0.15, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
 incRad = createStyledButton(Frame, 0.65, 0.15, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
-radDisp = createStyledLabel(Frame, 0.35, 0.15, 65, 30, "RAD: 50", Color3.fromRGB(40, 40, 40))
+radDisp = createStyledLabel(Frame, 0.35, 0.15, 75, 30, "RAD: 50", Color3.fromRGB(40, 40, 40))
 
 -- Height Controls
 decHeight = createStyledButton(Frame, 0.05, 0.3, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
-incHeight = createStyledButton(Frame, 0.65, 0.3, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
-heightDisp = createStyledLabel(Frame, 0.35, 0.3, 65, 30, "HGT: 100", Color3.fromRGB(40, 40, 40))
+incHeight = createStyledButton(Frame, 0.7, 0.3, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+heightDisp = createStyledLabel(Frame, 0.35, 0.3, 75, 30, "HGT: 100", Color3.fromRGB(40, 40, 40))
 
 -- Rotation Speed Controls
 decSpeed = createStyledButton(Frame, 0.05, 0.45, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
-incSpeed = createStyledButton(Frame, 0.65, 0.45, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
-speedDisp = createStyledLabel(Frame, 0.35, 0.45, 65, 30, "SPD: 10", Color3.fromRGB(40, 40, 40))
+incSpeed = createStyledButton(Frame, 0.7, 0.45, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+speedDisp = createStyledLabel(Frame, 0.35, 0.45, 75, 30, "SPD: 10", Color3.fromRGB(40, 40, 40))
 
 -- Attraction Strength Controls
 decStrength = createStyledButton(Frame, 0.05, 0.6, 65, 30, "-", Color3.fromRGB(60, 60, 80), false)
-incStrength = createStyledButton(Frame, 0.65, 0.6, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
-strengthDisp = createStyledLabel(Frame, 0.35, 0.6, 65, 30, "STR: 1000", Color3.fromRGB(40, 40, 40))
+incStrength = createStyledButton(Frame, 0.7, 0.6, 65, 30, "+", Color3.fromRGB(60, 80, 60), false)
+strengthDisp = createStyledLabel(Frame, 0.35, 0.6, 75, 30, "STR: 1000", Color3.fromRGB(40, 40, 40))
 
 -- Toggle Button (abajo, ocupando todo el ancho)
-toggleBtn = createStyledButton(Frame, 0.05, 0.75, 250, 35, "RING OFF", Color3.fromRGB(80, 60, 60), true)
+toggleBtn = createStyledButton(Frame, 0.05, 0.75, 235, 35, "RING OFF", Color3.fromRGB(80, 60, 60), true)
 
 -- Info Label
 info.Parent = Frame
@@ -289,7 +289,7 @@ mini.MouseButton1Click:Connect(function()
     end
     mini.Visible = false
     mini2.Visible = true
-    Frame:TweenSize(UDim2.new(0, 280, 0, 30), "Out", "Quad", 0.3, true)
+    Frame:TweenSize(UDim2.new(0, 260, 0, 30), "Out", "Quad", 0.3, true)
     Frame.BackgroundTransparency = 0.5
 end)
 
@@ -300,7 +300,7 @@ mini2.MouseButton1Click:Connect(function()
     end
     mini.Visible = true
     mini2.Visible = false
-    Frame:TweenSize(UDim2.new(0, 280, 0, 280), "Out", "Quad", 0.3, true) -- Ajustado al nuevo tamaño
+    Frame:TweenSize(UDim2.new(0, 260, 0, 260), "Out", "Quad", 0.3, true) -- Ajustado al nuevo tamaño
     Frame.BackgroundTransparency = 0
 end)
 
