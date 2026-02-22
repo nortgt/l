@@ -18,8 +18,7 @@ local speedLabel = Instance.new("TextLabel")
 local Speed = Instance.new("TextBox")
 local statusLabel = Instance.new("TextLabel")
 local Stat2 = Instance.new("TextLabel")
-local Fly = Instance.new("TextButton")
-local Unfly = Instance.new("TextButton")
+local FlyToggle = Instance.new("TextButton") -- Cambiado de Fly a FlyToggle
 local Flyon = Instance.new("Frame")
 local W = Instance.new("TextButton")
 local S = Instance.new("TextButton")
@@ -226,9 +225,8 @@ speedCorner.Parent = Speed
 statusLabel = createStyledLabel(FlyFrame, 0.05, 0.4, 80, 30, "Status:", Color3.fromRGB(220, 220, 220))
 Stat2 = createStyledLabel(FlyFrame, 0.35, 0.4, 50, 30, "Off", Color3.fromRGB(255, 50, 50))
 
-Fly = createStyledButton(FlyFrame, 0.05, 0.65, 120, 40, "ENABLE", Color3.fromRGB(0, 150, 191), 16)
-Unfly = createStyledButton(FlyFrame, 0.55, 0.65, 120, 40, "DISABLE", Color3.fromRGB(150, 50, 50), 16)
-Unfly.Visible = false
+-- Botón toggle (cambia entre ENABLE/DISABLE) - AHORA OCUPA TODO EL ANCHO
+FlyToggle = createStyledButton(FlyFrame, 0.05, 0.65, 250, 40, "ENABLE", Color3.fromRGB(0, 150, 191), 16)
 
 -- Frame de controles de vuelo (Flyon)
 Flyon.Parent = Frame
@@ -334,7 +332,7 @@ mini2.MouseButton1Click:Connect(function()
     for _, element in ipairs(uiElements) do
         element.Visible = true
     end
-    if Fly.Visible == false then
+    if FlyToggle.Text == "DISABLE" then
         Flyon.Visible = true
     end
     mini.Visible = true
@@ -347,7 +345,7 @@ closebutton.MouseButton1Click:Connect(function()
     Flymguiv2:Destroy()
 end)
 
--- 3. LÓGICA DE VUELO (original adaptada)
+-- 3. LÓGICA DE VUELO (FUNCIÓN ORIGINAL RESTAURADA)
 local function applyVelocity(direction)
     local HumanoidRP = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if HumanoidRP and HumanoidRP:FindFirstChild("BodyVelocity") then
@@ -368,61 +366,107 @@ end
 flyConnect(W, 1)
 flyConnect(S, -1)
 
-Fly.MouseButton1Click:Connect(function()
-    local character = LocalPlayer.Character
-    if not character then return end
-    
-    local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
-    if not HumanoidRP then return end
-    
-    Fly.Visible = false
-    Unfly.Visible = true
-    Flyon.Visible = true
-    Stat2.Text = "On"
-    Stat2.TextColor3 = Color3.fromRGB(50, 255, 50)
-    
-    local BV = Instance.new("BodyVelocity", HumanoidRP)
-    BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    
-    local BG = Instance.new("BodyGyro", HumanoidRP)
-    
-    RunService.RenderStepped:Connect(function()
-        if Fly.Visible == false and HumanoidRP and HumanoidRP.Parent then
-            BG.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-            BG.D = 5000
-            BG.P = 100000
-            BG.CFrame = workspace.CurrentCamera.CFrame
-        else
-            BG:Destroy()
-            BV:Destroy()
-        end
-    end)
-end)
+-- Variable para controlar el estado del toggle
+local flying = false
+local bodyVelocity = nil
+local bodyGyro = nil
+local connection = nil
 
-Unfly.MouseButton1Click:Connect(function()
-    local character = LocalPlayer.Character
-    if not character then return end
-    
-    local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
-    
-    Fly.Visible = true
-    Unfly.Visible = false
-    Flyon.Visible = false
-    Stat2.Text = "Off"
-    Stat2.TextColor3 = Color3.fromRGB(255, 50, 50)
-    
-    if HumanoidRP then
-        local bv = HumanoidRP:FindFirstChildOfClass("BodyVelocity")
-        local bg = HumanoidRP:FindFirstChildOfClass("BodyGyro")
-        if bv then bv:Destroy() end
-        if bg then bg:Destroy() end
+-- Función toggle (activar/desactivar vuelo)
+local function toggleFly()
+    if not flying then
+        -- ACTIVAR VUELO
+        local character = LocalPlayer.Character
+        if not character then return end
+        
+        local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
+        if not HumanoidRP then return end
+        
+        flying = true
+        FlyToggle.Text = "DISABLE"
+        FlyToggle.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+        Flyon.Visible = true
+        Stat2.Text = "On"
+        Stat2.TextColor3 = Color3.fromRGB(50, 255, 50)
+        
+        -- Crear BodyVelocity (necesario para que applyVelocity funcione)
+        local BV = Instance.new("BodyVelocity", HumanoidRP)
+        BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bodyVelocity = BV
+        
+        -- Crear BodyGyro
+        local BG = Instance.new("BodyGyro", HumanoidRP)
+        bodyGyro = BG
+        
+        -- Mantener orientación
+        connection = RunService.RenderStepped:Connect(function()
+            if flying and HumanoidRP and HumanoidRP.Parent then
+                BG.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                BG.D = 5000
+                BG.P = 100000
+                BG.CFrame = workspace.CurrentCamera.CFrame
+            end
+        end)
+        
+        -- Actualizar hover colors
+        local originalColor = FlyToggle.BackgroundColor3
+        local hoverColor = Color3.fromRGB(
+            math.min(originalColor.R * 255 + 20, 255) / 255,
+            math.min(originalColor.G * 255 + 20, 255) / 255,
+            math.min(originalColor.B * 255 + 20, 255) / 255
+        )
+        
+        FlyToggle.MouseEnter:Connect(function()
+            FlyToggle.BackgroundColor3 = hoverColor
+        end)
+        
+        FlyToggle.MouseLeave:Connect(function()
+            FlyToggle.BackgroundColor3 = originalColor
+        end)
+        
+    else
+        -- DESACTIVAR VUELO
+        local character = LocalPlayer.Character
+        if not character then return end
+        
+        local HumanoidRP = character:FindFirstChild("HumanoidRootPart")
+        
+        flying = false
+        FlyToggle.Text = "ENABLE"
+        FlyToggle.BackgroundColor3 = Color3.fromRGB(0, 150, 191)
+        Flyon.Visible = false
+        Stat2.Text = "Off"
+        Stat2.TextColor3 = Color3.fromRGB(255, 50, 50)
+        
+        -- Limpiar instancias
+        if HumanoidRP then
+            local bv = HumanoidRP:FindFirstChildOfClass("BodyVelocity")
+            local bg = HumanoidRP:FindFirstChildOfClass("BodyGyro")
+            if bv then bv:Destroy() end
+            if bg then bg:Destroy() end
+        end
+        
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
     end
-end)
+end
+
+-- Conectar el botón toggle
+FlyToggle.MouseButton1Click:Connect(toggleFly)
 
 -- Validación de entrada de velocidad
 Speed.FocusLost:Connect(function()
     local num = tonumber(Speed.Text)
     if not num or num < 1 then
         Speed.Text = "50"
+    end
+end)
+
+-- Limpiar cuando se destruye la GUI
+Flymguiv2.Destroying:Connect(function()
+    if connection then
+        connection:Disconnect()
     end
 end)
